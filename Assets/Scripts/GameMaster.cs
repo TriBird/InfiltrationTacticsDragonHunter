@@ -70,10 +70,10 @@ public class GameMaster : MonoBehaviour{
 		Caution_obj.transform.GetComponent<CanvasGroup>().DOFade(1, 0.5f);
 
 		// Boss出てくる
-		Boss_Trans.DOLocalMoveX(610f, 4f);
+		Boss_Trans.DOLocalMoveX(610f, 2f);
 
 		// 地形がはけるまで5s待機
-		yield return new WaitForSeconds(5.0f);
+		yield return new WaitForSeconds(2.0f);
 
 		// 警告画面消去
 		Caution_obj.transform.GetComponent<CanvasGroup>().DOFade(0, 0.5f);
