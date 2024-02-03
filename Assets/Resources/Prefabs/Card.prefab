@@ -35,7 +35,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0.000013346, y: -206.55}
-  m_SizeDelta: {x: 488.72, y: 200}
+  m_SizeDelta: {x: 442.6, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &706470363615932608
 CanvasRenderer:
@@ -71,14 +71,14 @@ MonoBehaviour:
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 10
-    m_MaxSize: 43
+    m_MaxSize: 61
     m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u8D85\u7D76\u5F37\u3044"
+  m_Text: "\u30C0\u30DF\u30FC\u30C6\u30AD\u30B9\u30C8\u30C0\u30DF\u30FC\u30C6\u30AD\u30B9\u30C8\u30C0\u30DF\u30FC\u30C6\u30AD\u30B9\u30C8\u30C0\u30DF\u30FC\u30C6\u30AD\u30B9\u30C8\u30C0\u30DF\u30FC\u30C6\u30AD\u30B9\u30C8"
 --- !u!1 &3650042140662098668
 GameObject:
   m_ObjectHideFlags: 0
@@ -341,6 +341,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8216798b6a4926b4788b5b3b93555837, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  card_index: 0
 --- !u!1 &9014470795337123722
 GameObject:
   m_ObjectHideFlags: 0

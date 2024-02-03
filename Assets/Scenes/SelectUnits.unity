@@ -644,6 +644,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16e448e34e8fc164c8ab3b5c227853d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  card_holder_trans: {fileID: 584554611}
+  remain_text_trans: {fileID: 1733718579}
 --- !u!224 &1134311854 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5355491835490291756, guid: b284e02b05d796248b47602aefa2e18c, type: 3}
