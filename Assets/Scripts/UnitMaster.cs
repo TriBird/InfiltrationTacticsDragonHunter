@@ -27,7 +27,7 @@ public class UnitDist{
 	public static List<UnitMaster> unit_masters = new List<UnitMaster>(){
 		new UnitMaster(1, 1, 0, "歩兵", "数の多さで自己の弱さをカバーする。"),
 		new UnitMaster(1, 1, 1, "弓兵", "突っ込む移動中にも攻撃してくれる"),
-		new UnitMaster(1, 3, 1, "魔術使い", "攻撃魔法、弱体化魔法、防衛魔法のどれかを使用する"),
+		new UnitMaster(1, 3, 1, "魔術師", "攻撃魔法、弱体化魔法、防衛魔法のどれかを使用する"),
 		new UnitMaster(10, 5, 2, "騎兵", "１回攻撃を避けることができる"),
 		new UnitMaster(10, 1, 2, "指揮官", "味方の攻撃力を上昇させる。"),
 		new UnitMaster(500, 50, 3, "ジークフリート", "つよい…！"),

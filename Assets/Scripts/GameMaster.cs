@@ -8,7 +8,7 @@ using System.Linq;
 public class GameMaster : MonoBehaviour{
 	public GameObject UnitChara_Prefab, Arrow_Prefab;
 	public GameObject Caution_obj, UnitNum_Obj;
-	public Transform Boss_Trans, HPBar_Trans, VSBoss_Trans;
+	public Transform Boss_Trans, HPBar_Trans, VSBoss_Trans, BuffBox_Trans, ArrowLayer_Trans;
 
 	public int CurrentUnitNum = 0;
 
@@ -16,6 +16,7 @@ public class GameMaster : MonoBehaviour{
 	public static bool isBoss = false;
 	public int MaxBossHP = 500;
 	public int BossHP = 500;
+	private int DefenceDownEffect = 0;
 
 	// 開発者モード
 	public bool DebugMode = true;
@@ -34,9 +35,27 @@ public class GameMaster : MonoBehaviour{
 		if(SelectUnits.select_unit_dict.Count == 0){
 			SelectUnits.select_unit_dict.Add("弓兵", 10);
 			SelectUnits.select_unit_dict.Add("指揮官", 1);
+			SelectUnits.select_unit_dict.Add("魔術師", 100);
 		}
 
 		BossEncounter();
+		DrawBuffs();
+	}
+	
+	public void DrawBuffs(){
+		// defence down
+		BuffBox_Trans.Find("DefenceDown").GetComponentInChildren<Text>().text = DefenceDownEffect.ToString();
+		BuffBox_Trans.Find("DefenceDown").gameObject.SetActive(DefenceDownEffect != 0);
+	}
+
+	/// <summary>
+	/// enchant defence down
+	/// </summary>
+	public void DefenceDown(){
+		DefenceDownEffect += 1;
+
+		// visualize
+		DrawBuffs();
 	}
 
 	/// <summary>
@@ -100,7 +119,7 @@ public class GameMaster : MonoBehaviour{
 
 	public IEnumerator BossAttack(){
 		while(true){
-			// attack units whose had arrived to dragon(max 5 units)
+			// [dragon crow] attack units whose had arrived to dragon(max 5 units)
 			List<UnitCharCtrl> ucc = new List<UnitCharCtrl>();
 			foreach(Transform tmp in VSBoss_Trans){
 				UnitCharCtrl ucc_ins = tmp.GetComponent<UnitCharCtrl>();
@@ -130,8 +149,8 @@ public class GameMaster : MonoBehaviour{
 		}
 	}
 
-	public void UnitAttack(string unitname, GameObject obj){
-		BossHP--;
+	public void UnitAttack(int damage, GameObject obj){
+		BossHP -= damage;
 
 		// ゲージを揺らす
 		HPBar_Trans.Find("Fill").GetComponent<Image>().fillAmount = (float)BossHP / MaxBossHP;

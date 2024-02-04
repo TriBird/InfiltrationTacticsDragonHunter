@@ -24,7 +24,7 @@ public class ArrowCtrl : MonoBehaviour{
 		.SetLookAt(0)
 		.SetLink(gameObject)
 		.OnComplete(()=>{
-			gameMaster.UnitAttack("arrow", gameObject);
+			gameMaster.UnitAttack(1, gameObject);
 			Destroy(gameObject);
 		});
 	}
