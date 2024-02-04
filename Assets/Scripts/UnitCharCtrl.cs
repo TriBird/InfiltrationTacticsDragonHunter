@@ -25,22 +25,21 @@ public class UnitCharCtrl : MonoBehaviour{
 		Move_Seq = DOTween.Sequence();
 		Move_Seq.Append(
 			transform.DOLocalMoveY(Random.Range(-400f, -300f), 0.5f)
-				.OnComplete(()=>ChangeBuffATK(true))
+				// ground
+				.OnComplete(()=>{
+					ChangeBuffATK(true);
+					if(unitname == "弓兵") StartCoroutine("ArrowFire");
+				})
 		);
 		Move_Seq.Append(
-			transform.DOLocalMoveX(500f, 2.0f)
-				.SetEase(Ease.Linear)
-				.OnComplete(()=>ChangeBuffATK(false))
+			transform.DOLocalMoveX(500f, 2.0f).SetEase(Ease.Linear)
 		);
 		Move_Seq.SetLink(gameObject);
 		Move_Seq.OnComplete(()=>{
 			col = StartCoroutine(Cronus());
+			ChangeBuffATK(false);
 			is_arrive_dragon = true;
 		});
-
-		// きゃら固有能力
-		// if(unitname == "弓兵") StartCoroutine("ArrowFire");
-		if(unitname == "指揮官") transform.Find("AttackBuff").gameObject.SetActive(true);
 	}
 
 	public void GetDamage(int damage){
@@ -50,10 +49,16 @@ public class UnitCharCtrl : MonoBehaviour{
 		}
 	}
 
-	// バフ暴発抑制
+	// change buffer object
 	private void ChangeBuffATK(bool isBuffATK){
 		if(unitname == "指揮官"){
-			transform.Find("AttackBuff").gameObject.SetActive(isBuffATK);
+			transform.Find("Buffer").gameObject.SetActive(isBuffATK);
+		}
+	}
+
+	public void OnTriggerEnter2D(Collider2D other){
+		if(other.gameObject.name == "Buffer"){
+			transform.Find("AttackBuff").gameObject.SetActive(true);
 		}
 	}
 
@@ -76,10 +81,24 @@ public class UnitCharCtrl : MonoBehaviour{
 		});
 	}
 
+	// main routine
 	public IEnumerator Cronus(){
 		while(true){
 			gameMaster.UnitAttack(unitname, gameObject);
 			yield return new WaitForSeconds(0.5f);
+		}
+	}
+
+	// arrow
+	private IEnumerator ArrowFire(){
+		yield return new WaitForSeconds(Random.Range(0f, 0.5f));
+
+		while(true){
+			GameObject tmp = Instantiate(gameMaster.Arrow_Prefab, transform.parent);
+			tmp.transform.localPosition = transform.localPosition;
+			tmp.GetComponent<ArrowCtrl>().gameMaster = gameMaster;
+
+			yield return new WaitForSeconds(1.0f);
 		}
 	}
 

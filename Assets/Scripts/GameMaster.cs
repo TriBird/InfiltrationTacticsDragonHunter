@@ -6,7 +6,7 @@ using DG.Tweening;
 using System.Linq;
 
 public class GameMaster : MonoBehaviour{
-	public GameObject UnitChara_Prefab;
+	public GameObject UnitChara_Prefab, Arrow_Prefab;
 	public GameObject Caution_obj, UnitNum_Obj;
 	public Transform Boss_Trans, HPBar_Trans, VSBoss_Trans;
 
@@ -29,6 +29,12 @@ public class GameMaster : MonoBehaviour{
 		HPBar_Trans.localPosition = new Vector2(0f, 630f);
 
 		UnitNum_Obj.GetComponentInChildren<Text>().text = "x" + SelectUnits.select_unit_dict.Values.Sum();
+
+		// for debug
+		if(SelectUnits.select_unit_dict.Count == 0){
+			SelectUnits.select_unit_dict.Add("弓兵", 10);
+			SelectUnits.select_unit_dict.Add("指揮官", 1);
+		}
 
 		BossEncounter();
 	}
@@ -98,25 +104,26 @@ public class GameMaster : MonoBehaviour{
 			List<UnitCharCtrl> ucc = new List<UnitCharCtrl>();
 			foreach(Transform tmp in VSBoss_Trans){
 				UnitCharCtrl ucc_ins = tmp.GetComponent<UnitCharCtrl>();
-				if(ucc_ins.is_arrive_dragon){
-					ucc.Add(ucc_ins);
+				if(ucc_ins){
+					if(ucc_ins.is_arrive_dragon){
+						ucc.Add(ucc_ins);
+					}
 				}
 				if(ucc.Count >= 10){
 					break;
 				}
 			}
 		 
-			if(ucc.Count <= 0){
-				yield return new WaitForSeconds(1.0f);
-			}
+		 	// boss attacking
+			if(ucc.Count > 0){
+				// animation
+				Boss_Trans.DOLocalMoveX(550f, 0.2f).OnComplete(()=>{
+					Boss_Trans.DOLocalMoveX(610f, 0.2f);
+				});
 
-		 	// animation
-			Boss_Trans.DOLocalMoveX(550f, 0.2f).OnComplete(()=>{
-				Boss_Trans.DOLocalMoveX(610f, 0.2f);
-			});
-
-		 	foreach(UnitCharCtrl ucc_instance in ucc){
-				ucc_instance.GetDamage(10);
+				foreach(UnitCharCtrl ucc_instance in ucc){
+					ucc_instance.GetDamage(10);
+				}
 			}
 
 			yield return new WaitForSeconds(1.0f);
