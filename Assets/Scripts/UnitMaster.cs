@@ -11,6 +11,7 @@ public class UnitMaster{
 	public int hitpoint = 10;
 	public int attack = 10;
 	public int rank = 0;
+	public int num = 0;
 	public string unit_desc = "";
 
 	public UnitMaster(int hp, int atk, int rank, string name, string desc){
