@@ -6,18 +6,17 @@ using DG.Tweening;
 using System.Linq;
 
 public class GameMaster : MonoBehaviour{
-	public GameObject UnitChara_Prefab;
+	public GameObject UnitChara_Prefab, Arrow_Prefab;
 	public GameObject Caution_obj, UnitNum_Obj;
-	public Transform Boss_Trans, HPBar_Trans, VSBoss_Trans;
+	public Transform Boss_Trans, HPBar_Trans, VSBoss_Trans, BuffBox_Trans, ArrowLayer_Trans;
 
 	public int CurrentUnitNum = 0;
 
 	// ボス戦フラグ
 	public static bool isBoss = false;
-	public int MaxBossHP = 200;
-	public int BossHP = 200;
-	private int BossRemain = 10;
-	private int CurrentPos = 0;
+	public int MaxBossHP = 500;
+	public int BossHP = 500;
+	private int DefenceDownEffect = 0;
 
 	// 開発者モード
 	public bool DebugMode = true;
@@ -30,10 +29,33 @@ public class GameMaster : MonoBehaviour{
 		Boss_Trans.localPosition = new Vector2(1330f, -160f);
 		HPBar_Trans.localPosition = new Vector2(0f, 630f);
 
-			UnitNum_Obj.GetComponentInChildren<Text>().text = "x" + SelectUnits.select_unit_dict.Values.Sum();
+		UnitNum_Obj.GetComponentInChildren<Text>().text = "x" + SelectUnits.select_unit_dict.Values.Sum();
 
+		// for debug
+		if(SelectUnits.select_unit_dict.Count == 0){
+			SelectUnits.select_unit_dict.Add("弓兵", 10);
+			SelectUnits.select_unit_dict.Add("指揮官", 1);
+			SelectUnits.select_unit_dict.Add("魔術師", 100);
+		}
 
 		BossEncounter();
+		DrawBuffs();
+	}
+	
+	public void DrawBuffs(){
+		// defence down
+		BuffBox_Trans.Find("DefenceDown").GetComponentInChildren<Text>().text = DefenceDownEffect.ToString();
+		BuffBox_Trans.Find("DefenceDown").gameObject.SetActive(DefenceDownEffect != 0);
+	}
+
+	/// <summary>
+	/// enchant defence down
+	/// </summary>
+	public void DefenceDown(){
+		DefenceDownEffect += 1;
+
+		// visualize
+		DrawBuffs();
 	}
 
 	/// <summary>
@@ -67,6 +89,7 @@ public class GameMaster : MonoBehaviour{
 		HPBar_Trans.DOLocalMoveY(360f, 0.5f).SetEase(Ease.OutBounce);
 		HPBar_Trans.Find("Fill").GetComponent<Image>().fillAmount = 1f;
 		BossHP = MaxBossHP;
+		StartCoroutine(BossAttack());
 
 		// 隊列召喚！
 		int unitnum = SelectUnits.select_unit_dict.Values.Sum();
@@ -94,16 +117,44 @@ public class GameMaster : MonoBehaviour{
 		yield break;
 	}
 
-	public void BossAttack(string unitname, GameObject obj){
-		BossHP--;
+	public IEnumerator BossAttack(){
+		while(true){
+			// [dragon crow] attack units whose had arrived to dragon(max 5 units)
+			List<UnitCharCtrl> ucc = new List<UnitCharCtrl>();
+			foreach(Transform tmp in VSBoss_Trans){
+				UnitCharCtrl ucc_ins = tmp.GetComponent<UnitCharCtrl>();
+				if(ucc_ins){
+					if(ucc_ins.is_arrive_dragon){
+						ucc.Add(ucc_ins);
+					}
+				}
+				if(ucc.Count >= 10){
+					break;
+				}
+			}
+		 
+		 	// boss attacking
+			if(ucc.Count > 0){
+				// animation
+				Boss_Trans.DOLocalMoveX(550f, 0.2f).OnComplete(()=>{
+					Boss_Trans.DOLocalMoveX(610f, 0.2f);
+				});
+
+				foreach(UnitCharCtrl ucc_instance in ucc){
+					ucc_instance.GetDamage(10);
+				}
+			}
+
+			yield return new WaitForSeconds(1.0f);
+		}
+	}
+
+	public void UnitAttack(int damage, GameObject obj){
+		BossHP -= damage;
 
 		// ゲージを揺らす
 		HPBar_Trans.Find("Fill").GetComponent<Image>().fillAmount = (float)BossHP / MaxBossHP;
-		//Boss_Trans.DOShakePosition(0.1f, 10);
-		Boss_Trans.DOLocalMoveX(550f, 0.5f).OnComplete(()=>{
-			Boss_Trans.DOLocalMoveX(610f, 0.5f);
-		});
-		HPBar_Trans.DOShakePosition(0.1f, 5).OnComplete(() => Destroy(obj));
+		HPBar_Trans.DOShakePosition(0.1f, 5);
 	}
 
 }
