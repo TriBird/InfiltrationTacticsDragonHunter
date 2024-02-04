@@ -15,7 +15,7 @@ public class UnitCharCtrl : MonoBehaviour{
 	void Start(){
 		Move_Seq = DOTween.Sequence();
 		Move_Seq.Append(
-			transform.DOLocalMoveY(-290f, 0.5f)
+			transform.DOLocalMoveY(Random.Range(-400f, -300f), 0.5f)
 				.OnComplete(()=>ChangeBuffATK(true))
 		);
 		Move_Seq.Append(

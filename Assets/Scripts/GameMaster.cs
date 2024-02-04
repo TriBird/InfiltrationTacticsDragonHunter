@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
+using System.Linq;
 
 public class GameMaster : MonoBehaviour{
 	public GameObject UnitChara_Prefab;
 	public GameObject Caution_obj, UnitNum_Obj;
 	public Transform Boss_Trans, HPBar_Trans, VSBoss_Trans;
-
-	private List<string> UnitList = new List<string>();
 
 	public int CurrentUnitNum = 0;
 
@@ -31,27 +30,10 @@ public class GameMaster : MonoBehaviour{
 		Boss_Trans.localPosition = new Vector2(1330f, -160f);
 		HPBar_Trans.localPosition = new Vector2(0f, 630f);
 
-		// デバッグモード
-		if(DebugMode){
-			for(int i=0; i<100; i++){
-				GetItem("歩兵", 1);
-				if(i % 20 == 0) GetItem("指揮官", 1);
-			}
-		}
+			UnitNum_Obj.GetComponentInChildren<Text>().text = "x" + SelectUnits.select_unit_dict.Values.Sum();
+
 
 		BossEncounter();
-	}
-
-	/// <summary>
-	/// 部隊アイテム取得
-	/// </summary>
-	public void GetItem(string unit, int num){
-		// GameObject tmp = Instantiate(UnitCell_Prefab, Sequence_Trans);
-		// tmp.GetComponent<Image>().sprite = Resources.Load<Sprite>("Chara/"+ unit);
-		CurrentUnitNum += num;
-		UnitNum_Obj.GetComponentInChildren<Text>().text = "x" + CurrentUnitNum;
-		UnitList.Add(unit);
-		//print("get unit [" + unit + "]");
 	}
 
 	/// <summary>
@@ -70,10 +52,10 @@ public class GameMaster : MonoBehaviour{
 		Caution_obj.transform.GetComponent<CanvasGroup>().DOFade(1, 0.5f);
 
 		// Boss出てくる
-		Boss_Trans.DOLocalMoveX(610f, 4f);
+		Boss_Trans.DOLocalMoveX(610f, 2f);
 
 		// 地形がはけるまで5s待機
-		yield return new WaitForSeconds(5.0f);
+		yield return new WaitForSeconds(2.0f);
 
 		// 警告画面消去
 		Caution_obj.transform.GetComponent<CanvasGroup>().DOFade(0, 0.5f);
@@ -87,23 +69,26 @@ public class GameMaster : MonoBehaviour{
 		BossHP = MaxBossHP;
 
 		// 隊列召喚！
-		int unitnum = 0;
-		while(true){
+		int unitnum = SelectUnits.select_unit_dict.Values.Sum();
+		while(SelectUnits.select_unit_dict.Count > 0){
 			yield return new WaitForSeconds(0.15f);
 
-			// 画面下部の部隊も消していく
-			//Destroy(Sequence_Trans.GetChild(0).gameObject);
-			CurrentUnitNum--;
-			UnitNum_Obj.GetComponentInChildren<Text>().text = "x" + CurrentUnitNum;
+			// unit extract
+			int index = Random.Range(0, SelectUnits.select_unit_dict.Count);
+			string unit_name = SelectUnits.select_unit_dict.ElementAt(index).Key;
+			SelectUnits.select_unit_dict[unit_name] -= 1;
+			if(SelectUnits.select_unit_dict[unit_name] <= 0){
+				SelectUnits.select_unit_dict.Remove(unit_name);
+			}
 
-			unitnum++;
+			unitnum--;
+			UnitNum_Obj.GetComponentInChildren<Text>().text = "x" + unitnum;
+
 			GameObject tmp = Instantiate(UnitChara_Prefab, VSBoss_Trans);
 			tmp.transform.localPosition = new Vector2(-700f, 670f);
-			tmp.transform.GetComponent<Image>().sprite = Resources.Load<Sprite>("Chara/" + UnitList[unitnum-1]);
+			tmp.transform.GetComponent<Image>().sprite = Resources.Load<Sprite>("Chara/" + unit_name);
 			tmp.transform.GetComponent<UnitCharCtrl>().gameMaster = this;
-			tmp.GetComponent<UnitCharCtrl>().unitname = UnitList[unitnum-1];
-
-			if(UnitList.Count <= unitnum) break;
+			tmp.GetComponent<UnitCharCtrl>().unitname = unit_name;
 		}
 
 		yield break;
