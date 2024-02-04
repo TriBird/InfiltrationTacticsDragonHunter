@@ -14,10 +14,8 @@ public class GameMaster : MonoBehaviour{
 
 	// ボス戦フラグ
 	public static bool isBoss = false;
-	public int MaxBossHP = 200;
-	public int BossHP = 200;
-	private int BossRemain = 10;
-	private int CurrentPos = 0;
+	public int MaxBossHP = 500;
+	public int BossHP = 500;
 
 	// 開発者モード
 	public bool DebugMode = true;
@@ -30,8 +28,7 @@ public class GameMaster : MonoBehaviour{
 		Boss_Trans.localPosition = new Vector2(1330f, -160f);
 		HPBar_Trans.localPosition = new Vector2(0f, 630f);
 
-			UnitNum_Obj.GetComponentInChildren<Text>().text = "x" + SelectUnits.select_unit_dict.Values.Sum();
-
+		UnitNum_Obj.GetComponentInChildren<Text>().text = "x" + SelectUnits.select_unit_dict.Values.Sum();
 
 		BossEncounter();
 	}
@@ -67,6 +64,7 @@ public class GameMaster : MonoBehaviour{
 		HPBar_Trans.DOLocalMoveY(360f, 0.5f).SetEase(Ease.OutBounce);
 		HPBar_Trans.Find("Fill").GetComponent<Image>().fillAmount = 1f;
 		BossHP = MaxBossHP;
+		StartCoroutine(BossAttack());
 
 		// 隊列召喚！
 		int unitnum = SelectUnits.select_unit_dict.Values.Sum();
@@ -94,16 +92,43 @@ public class GameMaster : MonoBehaviour{
 		yield break;
 	}
 
-	public void BossAttack(string unitname, GameObject obj){
+	public IEnumerator BossAttack(){
+		while(true){
+			// attack units whose had arrived to dragon(max 5 units)
+			List<UnitCharCtrl> ucc = new List<UnitCharCtrl>();
+			foreach(Transform tmp in VSBoss_Trans){
+				UnitCharCtrl ucc_ins = tmp.GetComponent<UnitCharCtrl>();
+				if(ucc_ins.is_arrive_dragon){
+					ucc.Add(ucc_ins);
+				}
+				if(ucc.Count >= 10){
+					break;
+				}
+			}
+		 
+			if(ucc.Count <= 0){
+				yield return new WaitForSeconds(1.0f);
+			}
+
+		 	// animation
+			Boss_Trans.DOLocalMoveX(550f, 0.2f).OnComplete(()=>{
+				Boss_Trans.DOLocalMoveX(610f, 0.2f);
+			});
+
+		 	foreach(UnitCharCtrl ucc_instance in ucc){
+				ucc_instance.GetDamage(10);
+			}
+
+			yield return new WaitForSeconds(1.0f);
+		}
+	}
+
+	public void UnitAttack(string unitname, GameObject obj){
 		BossHP--;
 
 		// ゲージを揺らす
 		HPBar_Trans.Find("Fill").GetComponent<Image>().fillAmount = (float)BossHP / MaxBossHP;
-		//Boss_Trans.DOShakePosition(0.1f, 10);
-		Boss_Trans.DOLocalMoveX(550f, 0.5f).OnComplete(()=>{
-			Boss_Trans.DOLocalMoveX(610f, 0.5f);
-		});
-		HPBar_Trans.DOShakePosition(0.1f, 5).OnComplete(() => Destroy(obj));
+		HPBar_Trans.DOShakePosition(0.1f, 5);
 	}
 
 }

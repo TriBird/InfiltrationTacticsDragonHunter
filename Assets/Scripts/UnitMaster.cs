@@ -33,6 +33,21 @@ public class UnitDist{
 		new UnitMaster(500, 50, 3, "ジークフリート", "つよい…！"),
 	};
 
+	/// <summary>
+	/// The class of finding UnitMaster from just name
+	/// </summary>
+	/// <param name="name">The name of unit</param>
+	/// <returns>UnitMaster</returns>
+	public static UnitMaster name_to_master(string name){
+		foreach(UnitMaster master in UnitDist.unit_masters){
+			if(master.unit_name == name){
+				return master;
+			}
+		}
+
+		return null;
+	}
+
 	public static int[][] unitnums = {
 		new int[]{30, 50},
 		new int[]{10, 30},

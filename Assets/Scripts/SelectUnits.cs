@@ -36,7 +36,7 @@ public class SelectUnits: MonoBehaviour{
 			UnitMaster unit = UnitDist.unit_masters[Random.Range(0, UnitDist.unit_masters.Count)];
 			int number = Random.Range(UnitDist.unitnums[unit.rank][0], UnitDist.unitnums[unit.rank][1]);
 			unit.num = number;
-			
+
 			Transform card_ins = card_holder_trans.GetChild(i);
 			card_ins.Find("Name").GetComponent<Text>().text = unit.unit_name;
 			card_ins.Find("Num").GetComponent<Text>().text = "x" + number;
