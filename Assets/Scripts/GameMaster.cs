@@ -19,6 +19,7 @@ public class GameMaster : MonoBehaviour{
 	private int MaxBossHP = 500;
 	private int BossHP = 500;
 	private int DefenceDownEffect = 0;
+	private int DefenceEffect = 0;
 	private Coroutine boss_atk_col = null;
 
 	// 開発者モード
@@ -37,9 +38,10 @@ public class GameMaster : MonoBehaviour{
 
 		// for debug
 		if(SelectUnits.select_unit_dict.Count == 0){
-			SelectUnits.select_unit_dict.Add("弓兵", 10);
-			SelectUnits.select_unit_dict.Add("指揮官", 1);
-			SelectUnits.select_unit_dict.Add("魔術師", 100);
+			SelectUnits.select_unit_dict.Add("歩兵", 100);
+			// SelectUnits.select_unit_dict.Add("弓兵", 10);
+			// SelectUnits.select_unit_dict.Add("指揮官", 1);
+			SelectUnits.select_unit_dict.Add("魔術師", 20);
 		}
 
 		BossEncounter();
@@ -53,13 +55,16 @@ public class GameMaster : MonoBehaviour{
 		// defence down
 		BuffBox_Trans.Find("DefenceDown").GetComponentInChildren<Text>().text = DefenceDownEffect.ToString();
 		BuffBox_Trans.Find("DefenceDown").gameObject.SetActive(DefenceDownEffect != 0);
+		// defence
+		BuffBox_Trans.Find("Defence").GetComponentInChildren<Text>().text = DefenceEffect.ToString();
+		BuffBox_Trans.Find("Defence").gameObject.SetActive(DefenceEffect != 0);
 	}
 
 	/// <summary>
 	/// enchant defence down
 	/// </summary>
-	public void DefenceDown(){
-		DefenceDownEffect += 1;
+	public void DefenceDown(int value){
+		DefenceDownEffect += value;
 
 		// visualize
 		DrawBuffs();
@@ -171,6 +176,7 @@ public class GameMaster : MonoBehaviour{
 				}
 			}
 		}
+
 		IEnumerator EskaBreath(){
 			Vector2 fire_ins_pos = new Vector2(500f, -160f);
 			for(int i=0; i<6; i++){
@@ -194,11 +200,20 @@ public class GameMaster : MonoBehaviour{
 				fire_ins_pos.x -= 250f;
 				yield return new WaitForSeconds(0.1f);
 			}
+
+			yield break;
+		}
+
+		void DragonScale(){
+			DefenceEffect += 1000;
+			DrawBuffs();
 		}
 
 		while(true){
-			StartCoroutine(EskaBreath());
-			yield return new WaitForSeconds(5.0f);
+			// StartCoroutine(EskaBreath());
+			// yield return new WaitForSeconds(5.0f);
+
+			DragonScale();
 
 			yield return new WaitForSeconds(1.0f);
 		}
@@ -207,7 +222,18 @@ public class GameMaster : MonoBehaviour{
 	public void UnitAttack(int damage, GameObject obj){
 		if(BossHP <= 0) return;
 
+		int damege_result = damage;
+		if(DefenceEffect != 0){
+			if(DefenceDownEffect != 0){
+				DefenceDownEffect -= 1;
+			}else{
+				damage -= 1;
+			}
+			DefenceEffect -= 1;
+		}
 		BossHP -= damage;
+
+		DrawBuffs();
 
 		if(BossHP <= 0){
 			StopCoroutine(boss_atk_col);
@@ -226,5 +252,4 @@ public class GameMaster : MonoBehaviour{
 		HPBar_Trans.Find("Fill").GetComponent<Image>().fillAmount = (float)BossHP / MaxBossHP;
 		HPBar_Trans.DOShakePosition(0.1f, 5);
 	}
-
 }

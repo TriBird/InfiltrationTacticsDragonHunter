@@ -106,7 +106,7 @@ public class UnitCharCtrl : MonoBehaviour{
 		gameMaster.UnitAttack(unit_master.attack, gameObject);
 	}
 	public void Magic_DefenceDown(){
-		gameMaster.DefenceDown();
+		gameMaster.DefenceDown(5);
 	}
 	public void Magic_Heal(){
 		// select heal target by randam
