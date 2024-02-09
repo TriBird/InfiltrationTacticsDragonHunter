@@ -154,7 +154,7 @@ public class GameMaster : MonoBehaviour{
 	public IEnumerator BossAttack(){
 		// dragon skill
 		// [dragon crow] attack units whose had arrived to dragon(max 5 units)
-		void DragonCrow(){
+		void _DragonCrow(int range, int damage){
 			List<UnitCharCtrl> ucc = new List<UnitCharCtrl>();
 			foreach(Transform tmp in VSBoss_Trans){
 				UnitCharCtrl ucc_ins = tmp.GetComponent<UnitCharCtrl>();
@@ -163,7 +163,7 @@ public class GameMaster : MonoBehaviour{
 						ucc.Add(ucc_ins);
 					}
 				}
-				if(ucc.Count >= 10)	break;
+				if(ucc.Count >= range)	break;
 			}
 			if(ucc.Count > 0){
 				// animation
@@ -172,12 +172,12 @@ public class GameMaster : MonoBehaviour{
 				}).SetLink(Boss_Trans.gameObject);
 				// damaging
 				foreach(UnitCharCtrl ucc_instance in ucc){
-					ucc_instance.GetDamage(10);
+					ucc_instance.GetDamage(damage);
 				}
 			}
 		}
 
-		IEnumerator EskaBreath(){
+		IEnumerator _EskaBreath(){
 			Vector2 fire_ins_pos = new Vector2(500f, -160f);
 			for(int i=0; i<6; i++){
 				GameObject obj = Instantiate(FireEffect_Prefab, EffectLayer_Trans);
@@ -204,16 +204,33 @@ public class GameMaster : MonoBehaviour{
 			yield break;
 		}
 
-		void DragonScale(){
-			DefenceEffect += 1000;
+		void _DragonScale(){
+			DefenceEffect += 50;
 			DrawBuffs();
 		}
 
 		while(true){
-			// StartCoroutine(EskaBreath());
-			// yield return new WaitForSeconds(5.0f);
+			// roll 0-99
+			int state = Random.Range(0, 100);
 
-			DragonScale();
+			if(current_boss_id == 0){
+				_DragonCrow(10, 10);
+			}
+			if(current_boss_id == 1){
+				if(state < 30){
+					_DragonScale();
+				}else{
+					_DragonCrow(10, 20);
+				}
+			}
+			if(current_boss_id == 2){
+				if(state < 70){
+					_DragonCrow(10, 20);
+				}else{
+					StartCoroutine(_EskaBreath());
+					yield return new WaitForSeconds(4.0f);
+				}
+			}
 
 			yield return new WaitForSeconds(1.0f);
 		}
