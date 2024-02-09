@@ -18,6 +18,8 @@ public class SelectUnits: MonoBehaviour{
 	private int select_remain = 5;
 
 	void Start(){
+		card_holder_trans.localPosition = new Vector3(0f, -1080f, 0f);
+		card_holder_trans.DOLocalMoveY(0f, 0.5f);
 		ChangeCards();
 	}
 

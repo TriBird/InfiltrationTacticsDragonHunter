@@ -84,7 +84,12 @@ public class UnitCharCtrl : MonoBehaviour{
 		// dead animation
 		Move_Seq = DOTween.Sequence();
 		Move_Seq.Append(
-			transform.DOLocalMove(new Vector2(Random.Range(400f, 600f), Random.Range(-150f, -180f)), 0.5f)
+			transform.DOLocalMove(
+				new Vector2(
+					Random.Range(transform.localPosition.x-100f, transform.localPosition.x+100f),
+					Random.Range(transform.localPosition.y+130f, transform.localPosition.y+150f)
+				), 0.5f
+			)
 		);
 		Move_Seq.Join(
 			transform.DOLocalRotate(new Vector3(0, 0, Random.Range(-360f, 360f)), 0.5f)
@@ -101,7 +106,7 @@ public class UnitCharCtrl : MonoBehaviour{
 		gameMaster.UnitAttack(unit_master.attack, gameObject);
 	}
 	public void Magic_DefenceDown(){
-		gameMaster.DefenceDown();
+		gameMaster.DefenceDown(5);
 	}
 	public void Magic_Heal(){
 		// select heal target by randam
