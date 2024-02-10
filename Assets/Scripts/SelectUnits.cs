@@ -20,6 +20,8 @@ public class SelectUnits: MonoBehaviour{
 	void Start(){
 		card_holder_trans.localPosition = new Vector3(0f, -1080f, 0f);
 		card_holder_trans.DOLocalMoveY(0f, 0.5f);
+		SkillModel.isSkill("友情の鎖", ()=>select_remain=6);
+		remain_text_trans.GetComponent<Text>().text = "残り選択可能 " +  select_remain;
 		ChangeCards();
 	}
 
@@ -38,6 +40,9 @@ public class SelectUnits: MonoBehaviour{
 			UnitMaster unit = UnitDist.unit_masters[Random.Range(0, UnitDist.unit_masters.Count)];
 			int number = Random.Range(UnitDist.unitnums[unit.rank][0], UnitDist.unitnums[unit.rank][1]);
 			unit.num = number;
+			SkillModel.isSkill("友情の鎖", ()=>{
+				unit.num = Mathf.FloorToInt(unit.num * 1.3f);
+			});
 
 			Transform card_ins = card_holder_trans.GetChild(i);
 			card_ins.Find("Name").GetComponent<Text>().text = unit.unit_name;

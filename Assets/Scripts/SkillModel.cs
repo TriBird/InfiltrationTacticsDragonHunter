@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
+using System;
 
 public class SkillModel: MonoBehaviour{
 
@@ -20,6 +21,30 @@ public class SkillModel: MonoBehaviour{
 			new SkillMaster("天啓", "無敵が発動した際、ダメージの一部をドラゴンに反射"),
 			new SkillMaster("絶対守護防壁", "起動すると数秒間無敵を得る"),
 		};
+
+		// loadskills
+		HavingSkills = new List<SkillMaster>();
+		List<string> splited_skill_names = new List<string>(PlayerPrefs.GetString("having_skills").Split(","));
+		foreach(string skill_name in splited_skill_names){
+			if(skillmasters.Any(item => item.skill_name == skill_name)){
+				HavingSkills.Add(skillmasters.Where(item => item.skill_name == skill_name).FirstOrDefault());
+			}
+		}
+	}
+
+	public static void isSkill(string name, Action action){
+		if(HavingSkills.Any(item => item.skill_name == name)){
+			action.Invoke();
+		}
+	}
+
+	public void OnDestroy(){
+		// save as csv text
+		string savetxt = "";
+		foreach(SkillMaster skill in HavingSkills){
+			savetxt += skill.skill_name + ",";
+		}
+		PlayerPrefs.SetString("having_skills", savetxt);
 	}
 }
 
