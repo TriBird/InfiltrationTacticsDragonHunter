@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 using TMPro;
+using System.Linq;
 
 public class UnitCharCtrl : MonoBehaviour{
 
@@ -131,10 +132,28 @@ public class UnitCharCtrl : MonoBehaviour{
 		while(true){
 			if(unit_master.unit_name == "魔術師"){
 				int index = Random.Range(0, 3);
-				switch(index){
-					case 0: Magic_Attack(); break;
-					case 1: Magic_DefenceDown(); break;
-					case 2: Magic_Heal(); break;
+				
+				if(SkillModel.HavingSkills.Any(item => item.skill_name == "圧縮魔法")){
+					switch(index){
+						case 0:
+							Magic_Attack();
+							Magic_DefenceDown();
+							break;
+						case 1:
+							Magic_Attack();
+							Magic_DefenceDown();
+							break;
+						case 2:
+							Magic_Attack();
+							Magic_Heal();
+							break;
+					}
+				}else{
+					switch(index){
+						case 0: Magic_Attack(); break;
+						case 1: Magic_DefenceDown(); break;
+						case 2: Magic_Heal(); break;
+					}
 				}
 			}
 			gameMaster.UnitAttack(unit_master.attack, gameObject);
