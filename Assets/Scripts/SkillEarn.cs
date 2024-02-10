@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
-using System.Linq;
 using UnityEngine.SceneManagement;
 
 public class SkillEarn: MonoBehaviour{
@@ -30,8 +29,6 @@ public class SkillEarn: MonoBehaviour{
 				selected_skills.Add(card_list[tmp.GetComponent<CardCtrl>().card_index]);
 			}
 		} 
-		
-		// error
 		if(selected_skills.Count < select_remain){
 			earn_error_trans.gameObject.SetActive(true);
 			DOVirtual.DelayedCall(1.5f, ()=>{
@@ -48,22 +45,32 @@ public class SkillEarn: MonoBehaviour{
 	}
 
 	public void GenerateCards(){
-		List<SkillMaster> deepCopiedList = SkillModel.skillmasters.Select(item => item).ToList();
+		List<SkillMaster> diff_list = SkillModel.skillmasters.Except(SkillModel.HavingSkills).ToList();
+		int slot_num = diff_list.Count;
+		if(slot_num > 3) slot_num = 3;
+
 		System.Random random = new System.Random();
-		deepCopiedList.Select(x => new { Number = random.Next(), Item = x })
+		diff_list.Select(x => new { Number = random.Next(), Item = x })
 			.OrderBy(x => x.Number)
 			.Select(x => x.Item)
 			.ToList();
 
-		card_list = deepCopiedList.Take(3).ToList();
+		card_list = diff_list.Take(3).ToList();
+		select_remain = card_list.Count;
+		remain_text_trans.GetComponent<Text>().text = "アップデート可能：" + select_remain;
 		for(int i=0; i<3; i++){
-			SkillMaster skill = card_list[i];
 			Transform card_ins = card_holder_trans.GetChild(i);
-			card_ins.GetComponent<CardCtrl>().select_limits = select_remain;
-			card_ins.Find("Num").gameObject.SetActive(false);
-			card_ins.Find("Name").GetComponent<Text>().text = skill.skill_name;
-			card_ins.Find("Image").GetComponent<Image>().sprite = skill.skill_image;
-			card_ins.Find("Description").GetComponent<Text>().text = skill.skill_desc;
+			if(slot_num <= i){
+				// if selectable skills are less than three
+				card_ins.gameObject.SetActive(false);
+			}else{
+				SkillMaster skill = card_list[i];
+				card_ins.GetComponent<CardCtrl>().select_limits = select_remain;
+				card_ins.Find("Num").gameObject.SetActive(false);
+				card_ins.Find("Name").GetComponent<Text>().text = skill.skill_name;
+				card_ins.Find("Image").GetComponent<Image>().sprite = skill.skill_image;
+				card_ins.Find("Description").GetComponent<Text>().text = skill.skill_desc;
+			}
 		}
 	}
 }
