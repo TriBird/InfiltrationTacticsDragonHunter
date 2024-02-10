@@ -7,10 +7,10 @@ using DG.Tweening;
 
 public class SkillModel: MonoBehaviour{
 
-	public List<SkillMaster> skillmasters = new List<SkillMaster>();
-	public List<string> HavingSkills = new List<string>();
+	public static List<SkillMaster> skillmasters = new List<SkillMaster>();
+	public static List<SkillMaster> HavingSkills = new List<SkillMaster>();
 
-	public void Start(){
+	public void Awake(){
 		skillmasters = new List<SkillMaster>{
 			new SkillMaster("徴兵用紙", "各フェーズの選択可能部隊数が１増える"),
 			new SkillMaster("友情の鎖", "部隊の人数+30%"),

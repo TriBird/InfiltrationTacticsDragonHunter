@@ -261,7 +261,7 @@ public class GameMaster : MonoBehaviour{
 
 			Mask_Trans.GetComponent<CanvasGroup>().DOFade(1, 1.0f).OnComplete(()=>{
 				current_boss_id += 1;
-				SceneManager.LoadScene("SelectUnits");
+				SceneManager.LoadScene("UpGrade");
 			}).SetLink(gameObject);
 		}
 
