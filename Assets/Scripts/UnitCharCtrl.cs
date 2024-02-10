@@ -10,18 +10,18 @@ public class UnitCharCtrl : MonoBehaviour{
 	public GameMaster gameMaster;
 	public string unitname = "debug";
 	public bool is_arrive_dragon = false;
+	public UnitMaster unit_master;
 
 	private int current_hp = -1;
 	private bool is_invisible = false;
 
-	private UnitMaster unit_master;
 	private Sequence Move_Seq;
 	private Coroutine col;
 
 	void Start(){
 		// 自分が何者かを知る
-		unit_master = UnitDist.name_to_master(unitname);
-		current_hp = unit_master.hitpoint;
+		// unit_master = UnitDist.name_to_master(unitname);
+		current_hp = unit_master.max_hitpoint;
 
 		// char_skill
 		if(unit_master.unit_name == "騎兵"){
@@ -112,7 +112,7 @@ public class UnitCharCtrl : MonoBehaviour{
 		// select heal target by randam
 		int r = Random.Range(0, gameMaster.VSBoss_Trans.childCount);
 		UnitCharCtrl ucc = gameMaster.VSBoss_Trans.GetChild(r).GetComponent<UnitCharCtrl>();
-		ucc.current_hp += Mathf.FloorToInt(ucc.unit_master.hitpoint / 2);
+		ucc.current_hp += Mathf.FloorToInt(ucc.unit_master.max_hitpoint / 2);
 
 		// animation
 		Transform effect_trans = ucc.transform.Find("HealEffect");

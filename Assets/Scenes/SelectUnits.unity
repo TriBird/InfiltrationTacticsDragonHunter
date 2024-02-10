@@ -610,6 +610,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1003130593}
   - component: {fileID: 1003130594}
+  - component: {fileID: 1003130595}
   m_Layer: 0
   m_Name: Scripts
   m_TagString: Untagged
@@ -646,6 +647,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   card_holder_trans: {fileID: 584554611}
   remain_text_trans: {fileID: 1733718579}
+--- !u!114 &1003130595
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1003130592}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b68e7ec7eb9c964a9ecdc56dde75e1c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &1134311854 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5355491835490291756, guid: b284e02b05d796248b47602aefa2e18c, type: 3}

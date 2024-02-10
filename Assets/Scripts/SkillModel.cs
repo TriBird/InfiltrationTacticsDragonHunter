@@ -15,11 +15,11 @@ public class SkillModel: MonoBehaviour{
 		skillmasters = new List<SkillMaster>{
 			new SkillMaster("徴兵用紙", "各フェーズの選択可能部隊数が１増える"),
 			new SkillMaster("友情の鎖", "部隊の人数+30%"),
-			new SkillMaster("偶数の力", "部隊の数を偶数で調整すると攻撃体力２倍"),
-			new SkillMaster("英知のゴーグル", "立ち止まったほうがいいことに気づく"),
-			new SkillMaster("複合連立魔法", "３つの中から一度に２つを使用する"),
-			new SkillMaster("天啓", "無敵が発動した際、ダメージの一部をドラゴンに反射"),
-			new SkillMaster("絶対守護防壁", "起動すると数秒間無敵を得る"),
+			new SkillMaster("偶数の力", "部隊の数を偶数で調整すると歩兵の攻撃体力２倍"),
+			new SkillMaster("英知のゴーグル", "弓兵が立ち止まったほうがいいことに気づく"),
+			new SkillMaster("複合連立魔法", "魔術師は３つの魔法の中から一度に２つを使用する"),
+			new SkillMaster("天啓", "騎士の無敵が発動した際、ダメージの一部をドラゴンに反射"),
+			new SkillMaster("絶対守護防壁", "起動すると指揮官の周辺で数秒間無敵を得る"),
 		};
 
 		// loadskills
