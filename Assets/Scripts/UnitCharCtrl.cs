@@ -54,6 +54,9 @@ public class UnitCharCtrl : MonoBehaviour{
 	public void GetDamage(int damage){
 		if(is_invisible){
 			is_invisible = false;
+			SkillModel.isSkill("天啓", ()=>{
+				gameMaster.UnitAttack(Mathf.FloorToInt(damage/2f), gameObject);
+			});
 			return;
 		}
 		current_hp -= damage;
@@ -132,7 +135,6 @@ public class UnitCharCtrl : MonoBehaviour{
 		while(true){
 			if(unit_master.unit_name == "魔術師"){
 				int index = Random.Range(0, 3);
-				
 				if(SkillModel.HavingSkills.Any(item => item.skill_name == "圧縮魔法")){
 					switch(index){
 						case 0:
