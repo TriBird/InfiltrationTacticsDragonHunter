@@ -76,6 +76,9 @@ public class UnitCharCtrl : MonoBehaviour{
 		if(other.gameObject.name == "Buffer"){
 			transform.Find("AttackBuff").gameObject.SetActive(true);
 		}
+		if(other.gameObject.name == "Invisible"){
+			is_invisible = true;
+		}
 	}
 
 	/// <summary>
@@ -84,6 +87,11 @@ public class UnitCharCtrl : MonoBehaviour{
 	public void DeadUnit(){
 		if(col != null) StopCoroutine(col);
 		Move_Seq.Kill();
+
+		// item effect
+		SkillModel.isSkill("絶対守護防壁", ()=>{
+			transform.Find("Invisible").gameObject.SetActive(true);
+		});
 
 		// dead animation
 		Move_Seq = DOTween.Sequence();
