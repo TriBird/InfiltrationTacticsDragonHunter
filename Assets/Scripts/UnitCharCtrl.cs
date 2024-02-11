@@ -4,24 +4,25 @@ using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 using TMPro;
+using System.Linq;
 
 public class UnitCharCtrl : MonoBehaviour{
 
 	public GameMaster gameMaster;
 	public string unitname = "debug";
 	public bool is_arrive_dragon = false;
+	public UnitMaster unit_master;
 
 	private int current_hp = -1;
 	private bool is_invisible = false;
 
-	private UnitMaster unit_master;
 	private Sequence Move_Seq;
 	private Coroutine col;
 
 	void Start(){
 		// 自分が何者かを知る
-		unit_master = UnitDist.name_to_master(unitname);
-		current_hp = unit_master.hitpoint;
+		// unit_master = UnitDist.name_to_master(unitname);
+		current_hp = unit_master.max_hitpoint;
 
 		// char_skill
 		if(unit_master.unit_name == "騎兵"){
@@ -53,6 +54,9 @@ public class UnitCharCtrl : MonoBehaviour{
 	public void GetDamage(int damage){
 		if(is_invisible){
 			is_invisible = false;
+			SkillModel.isSkill("天啓", ()=>{
+				gameMaster.UnitAttack(Mathf.FloorToInt(damage/2f), gameObject);
+			});
 			return;
 		}
 		current_hp -= damage;
@@ -72,6 +76,9 @@ public class UnitCharCtrl : MonoBehaviour{
 		if(other.gameObject.name == "Buffer"){
 			transform.Find("AttackBuff").gameObject.SetActive(true);
 		}
+		if(other.gameObject.name == "Invisible"){
+			is_invisible = true;
+		}
 	}
 
 	/// <summary>
@@ -80,6 +87,11 @@ public class UnitCharCtrl : MonoBehaviour{
 	public void DeadUnit(){
 		if(col != null) StopCoroutine(col);
 		Move_Seq.Kill();
+
+		// item effect
+		SkillModel.isSkill("絶対守護防壁", ()=>{
+			transform.Find("Invisible").gameObject.SetActive(true);
+		});
 
 		// dead animation
 		Move_Seq = DOTween.Sequence();
@@ -112,7 +124,7 @@ public class UnitCharCtrl : MonoBehaviour{
 		// select heal target by randam
 		int r = Random.Range(0, gameMaster.VSBoss_Trans.childCount);
 		UnitCharCtrl ucc = gameMaster.VSBoss_Trans.GetChild(r).GetComponent<UnitCharCtrl>();
-		ucc.current_hp += Mathf.FloorToInt(ucc.unit_master.hitpoint / 2);
+		ucc.current_hp += Mathf.FloorToInt(ucc.unit_master.max_hitpoint / 2);
 
 		// animation
 		Transform effect_trans = ucc.transform.Find("HealEffect");
@@ -131,10 +143,27 @@ public class UnitCharCtrl : MonoBehaviour{
 		while(true){
 			if(unit_master.unit_name == "魔術師"){
 				int index = Random.Range(0, 3);
-				switch(index){
-					case 0: Magic_Attack(); break;
-					case 1: Magic_DefenceDown(); break;
-					case 2: Magic_Heal(); break;
+				if(SkillModel.HavingSkills.Any(item => item.skill_name == "圧縮魔法")){
+					switch(index){
+						case 0:
+							Magic_Attack();
+							Magic_DefenceDown();
+							break;
+						case 1:
+							Magic_Attack();
+							Magic_DefenceDown();
+							break;
+						case 2:
+							Magic_Attack();
+							Magic_Heal();
+							break;
+					}
+				}else{
+					switch(index){
+						case 0: Magic_Attack(); break;
+						case 1: Magic_DefenceDown(); break;
+						case 2: Magic_Heal(); break;
+					}
 				}
 			}
 			gameMaster.UnitAttack(unit_master.attack, gameObject);
@@ -150,6 +179,12 @@ public class UnitCharCtrl : MonoBehaviour{
 			GameObject tmp = Instantiate(gameMaster.Arrow_Prefab, gameMaster.ArrowLayer_Trans);
 			tmp.transform.localPosition = transform.localPosition;
 			tmp.GetComponent<ArrowCtrl>().gameMaster = gameMaster;
+			int random = Random.Range(0, 100);
+			if(random < 50 && SkillModel.HavingSkills.Any(item => item.skill_name == "英知のゴーグル")){
+				tmp.GetComponent<ArrowCtrl>().damage = unit_master.attack*2;
+			}else{
+				tmp.GetComponent<ArrowCtrl>().damage = unit_master.attack;
+			}
 
 			yield return new WaitForSeconds(1.0f);
 		}

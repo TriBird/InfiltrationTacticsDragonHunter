@@ -6,6 +6,7 @@ using DG.Tweening;
 
 public class ArrowCtrl : MonoBehaviour{
 	public GameMaster gameMaster;
+	public int damage = 0;
 
 	void Start(){
 		Vector3 start_pos = transform.localPosition;
@@ -24,7 +25,7 @@ public class ArrowCtrl : MonoBehaviour{
 		.SetLookAt(0)
 		.SetLink(gameObject)
 		.OnComplete(()=>{
-			gameMaster.UnitAttack(1, gameObject);
+			gameMaster.UnitAttack(damage, gameObject);
 			Destroy(gameObject);
 		});
 	}

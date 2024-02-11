@@ -34,14 +34,13 @@ public class GameMaster : MonoBehaviour{
 		HPBar_Trans.localPosition = new Vector2(0f, 630f);
 		Mask_Trans.GetComponent<CanvasGroup>().alpha = 0;
 
-		UnitNum_Obj.GetComponentInChildren<Text>().text = "x" + SelectUnits.select_unit_dict.Values.Sum();
+		UnitNum_Obj.GetComponentInChildren<Text>().text = "x" + SelectUnits.select_unit_lists.Sum(item => item.num);
 
 		// for debug
-		if(SelectUnits.select_unit_dict.Count == 0){
-			SelectUnits.select_unit_dict.Add("歩兵", 100);
+		if(SelectUnits.select_unit_lists.Count == 0){
+			SelectUnits.select_unit_lists.Add(UnitDist.name_to_master("歩兵", 10));
 			// SelectUnits.select_unit_dict.Add("弓兵", 10);
 			// SelectUnits.select_unit_dict.Add("指揮官", 1);
-			SelectUnits.select_unit_dict.Add("魔術師", 20);
 		}
 
 		BossEncounter();
@@ -107,26 +106,28 @@ public class GameMaster : MonoBehaviour{
 		boss_atk_col = StartCoroutine(BossAttack());
 
 		// 隊列召喚！
-		int unitnum = SelectUnits.select_unit_dict.Values.Sum();
-		while(SelectUnits.select_unit_dict.Count > 0){
+		int unitnum = SelectUnits.select_unit_lists.Sum(item => item.num);
+		while(SelectUnits.select_unit_lists.Count > 0){
+			if(unitnum == 0) yield break;
 			yield return new WaitForSeconds(0.15f);
 
 			// unit extract
-			int index = Random.Range(0, SelectUnits.select_unit_dict.Count);
-			string unit_name = SelectUnits.select_unit_dict.ElementAt(index).Key;
-			SelectUnits.select_unit_dict[unit_name] -= 1;
-			if(SelectUnits.select_unit_dict[unit_name] <= 0){
-				SelectUnits.select_unit_dict.Remove(unit_name);
+			int index = Random.Range(0, SelectUnits.select_unit_lists.Count);
+			UnitMaster unit = SelectUnits.select_unit_lists[index];
+			SelectUnits.select_unit_lists[index].num -= 1;
+			if(SelectUnits.select_unit_lists[index].num <= 0){
+				SelectUnits.select_unit_lists.RemoveAt(index);
 			}
 
-			unitnum--;
+			unitnum -= 1;
 			UnitNum_Obj.GetComponentInChildren<Text>().text = "x" + unitnum;
 
 			GameObject tmp = Instantiate(UnitChara_Prefab, VSBoss_Trans);
 			tmp.transform.localPosition = new Vector2(-700f, 670f);
-			tmp.transform.GetComponent<Image>().sprite = Resources.Load<Sprite>("Chara/" + unit_name);
+			tmp.transform.GetComponent<Image>().sprite = Resources.Load<Sprite>("Chara/" + unit.unit_name);
 			tmp.transform.GetComponent<UnitCharCtrl>().gameMaster = this;
-			tmp.GetComponent<UnitCharCtrl>().unitname = unit_name;
+			tmp.transform.GetComponent<UnitCharCtrl>().unit_master = new UnitMaster(unit);
+			tmp.GetComponent<UnitCharCtrl>().unitname = unit.unit_name;
 		}
 
 		yield break;
@@ -261,7 +262,7 @@ public class GameMaster : MonoBehaviour{
 
 			Mask_Trans.GetComponent<CanvasGroup>().DOFade(1, 1.0f).OnComplete(()=>{
 				current_boss_id += 1;
-				SceneManager.LoadScene("SelectUnits");
+				SceneManager.LoadScene("UpGrade");
 			}).SetLink(gameObject);
 		}
 

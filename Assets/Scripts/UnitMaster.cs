@@ -6,9 +6,9 @@ using UnityEngine.UI;
 using DG.Tweening;
 
 public class UnitMaster{
-
 	public string unit_name = "debug";
-	public int hitpoint = 10;
+	public int max_hitpoint = 10;
+	public int current_hitpoint = 10;
 	public int attack = 10;
 	public int rank = 0;
 	public int num = 0;
@@ -16,10 +16,20 @@ public class UnitMaster{
 
 	public UnitMaster(int hp, int atk, int rank, string name, string desc){
 		unit_name = name;
-		hitpoint = hp;
+		max_hitpoint = hp;
+		current_hitpoint = hp;
 		attack = atk;
 		this.rank = rank;
 		unit_desc = desc;
+	}
+	public UnitMaster(UnitMaster master){
+		this.unit_name = master.unit_name;
+		this.max_hitpoint = master.max_hitpoint;
+		this.current_hitpoint = master.current_hitpoint;
+		this.attack = master.attack;
+		this.rank = master.rank;
+		this.num = master.num;
+		this.unit_desc = master.unit_desc;
 	}
 }
 
@@ -34,17 +44,26 @@ public class UnitDist{
 	};
 
 	/// <summary>
-	/// The class of finding UnitMaster from just name
+	/// The class of finding UnitMaster from just name as new instance
 	/// </summary>
 	/// <param name="name">The name of unit</param>
 	/// <returns>UnitMaster</returns>
 	public static UnitMaster name_to_master(string name){
 		foreach(UnitMaster master in UnitDist.unit_masters){
 			if(master.unit_name == name){
-				return master;
+				return new UnitMaster(master);
 			}
 		}
-
+		return null;
+	}
+	public static UnitMaster name_to_master(string name, int num){
+		foreach(UnitMaster master in UnitDist.unit_masters){
+			if(master.unit_name == name){
+				UnitMaster tmp = new UnitMaster(master);
+				tmp.num = num;
+				return tmp;
+			}
+		}
 		return null;
 	}
 
