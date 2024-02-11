@@ -179,6 +179,12 @@ public class UnitCharCtrl : MonoBehaviour{
 			GameObject tmp = Instantiate(gameMaster.Arrow_Prefab, gameMaster.ArrowLayer_Trans);
 			tmp.transform.localPosition = transform.localPosition;
 			tmp.GetComponent<ArrowCtrl>().gameMaster = gameMaster;
+			int random = Random.Range(0, 100);
+			if(random < 50 && SkillModel.HavingSkills.Any(item => item.skill_name == "英知のゴーグル")){
+				tmp.GetComponent<ArrowCtrl>().damage = unit_master.attack*2;
+			}else{
+				tmp.GetComponent<ArrowCtrl>().damage = unit_master.attack;
+			}
 
 			yield return new WaitForSeconds(1.0f);
 		}

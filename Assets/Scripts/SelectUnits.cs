@@ -38,8 +38,9 @@ public class SelectUnits: MonoBehaviour{
 
 		// rot cards
 		for(int i=0; i<3; i++){
-			// UnitMaster unit = new UnitMaster(UnitDist.unit_masters[Random.Range(0, UnitDist.unit_masters.Count)]);
-			UnitMaster unit = UnitDist.name_to_master("歩兵");
+			UnitMaster unit = new UnitMaster(UnitDist.unit_masters[Random.Range(0, UnitDist.unit_masters.Count)]);
+			// for rot fix
+			// UnitMaster unit = UnitDist.name_to_master("歩兵");
 			int number = Random.Range(UnitDist.unitnums[unit.rank][0], UnitDist.unitnums[unit.rank][1]);
 			unit.num = number;
 			SkillModel.isSkill("友情の鎖", ()=>{
