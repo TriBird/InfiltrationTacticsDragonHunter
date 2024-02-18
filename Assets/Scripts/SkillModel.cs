@@ -30,6 +30,8 @@ public class SkillModel: MonoBehaviour{
 				HavingSkills.Add(skillmasters.Where(item => item.skill_name == skill_name).FirstOrDefault());
 			}
 		}
+
+		print(PlayerPrefs.GetString("having_skills"));
 	}
 
 	public static void isSkill(string name, Action action){

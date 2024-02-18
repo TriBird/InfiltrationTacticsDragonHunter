@@ -6,24 +6,30 @@ using UnityEngine.UI;
 using DG.Tweening;
 using System.Security.Cryptography;
 using UnityEngine.SceneManagement;
+using UnityEngine.EventSystems;
 
 public class SelectUnits: MonoBehaviour{
 
-	public Transform card_holder_trans, remain_text_trans;
+	public GameObject unit_cell_prefab;
+	public Transform card_holder_trans, remain_text_trans, unit_list_trans, upgrade_list_trans, description_trans;
 
 	// public static Dictionary<UnitMaster, int> select_unit_dict = new Dictionary<UnitMaster, int>(); 
 	public static List<UnitMaster> select_unit_lists = new List<UnitMaster>();
 	private bool isAnimation = false;
+	private bool isUnitListOpen = false;
 	private List<UnitMaster> card_list = new List<UnitMaster>();
-
 	private int select_remain = 5;
 
 	void Start(){
+		select_unit_lists = new List<UnitMaster>();
 		card_holder_trans.localPosition = new Vector3(0f, -1080f, 0f);
 		card_holder_trans.DOLocalMoveY(0f, 0.5f);
-		SkillModel.isSkill("友情の鎖", ()=>select_remain=6);
+		SkillModel.isSkill("徴兵用紙", ()=>select_remain=6);
 		remain_text_trans.GetComponent<Text>().text = "残り選択可能 " +  select_remain;
+		description_trans.gameObject.SetActive(false);
 		ChangeCards();
+		UnitListUpdate();
+		UpgradeListUpdate();
 	}
 
 	public void Selected_units(){
@@ -66,6 +72,71 @@ public class SelectUnits: MonoBehaviour{
 		seq.SetLink(gameObject);
 	}
 
+	public void UnitListUpdate(){
+		foreach(Transform tmp in unit_list_trans.Find("UnitBox")) Destroy(tmp.gameObject);
+		foreach(UnitMaster unit_m in select_unit_lists){
+			GameObject obj = Instantiate(unit_cell_prefab, unit_list_trans.Find("UnitBox"));
+			obj.transform.Find("Image").GetComponent<Image>().sprite = Resources.Load<Sprite>("Chara/" + unit_m.unit_name);
+			obj.transform.Find("Name").GetComponent<Text>().text = unit_m.unit_name;
+			obj.transform.Find("Num").GetComponent<Text>().text = unit_m.num.ToString();
+		}
+	}
+
+	public void UpgradeDescShow(int index){
+		description_trans.localPosition = new Vector3(120f * index + 70f - 750f, 323f, 0f);
+		description_trans.Find("SkillTitle").GetComponent<Text>().text = SkillModel.skillmasters[index].skill_name;
+		description_trans.Find("SkillDesc").GetComponent<Text>().text = SkillModel.skillmasters[index].skill_desc;
+		description_trans.gameObject.SetActive(true);
+	}
+	public void UpgradeDescUnShow(){
+		description_trans.gameObject.SetActive(false);
+	}
+
+	public void UpgradeListUpdate(){
+		int counter = 0;
+		foreach(SkillMaster master in SkillModel.skillmasters){
+			EventTrigger e_trigger = upgrade_list_trans.GetChild(counter).GetComponent<EventTrigger>();
+			e_trigger.transform.GetComponent<Image>().sprite = master.skill_image;
+			if(SkillModel.HavingSkills.Any(skill => skill.skill_name == master.skill_name)){
+				e_trigger.transform.GetComponent<Image>().color = new Color32(0xff, 0xff, 0xff, 0xff);
+			}else{
+				e_trigger.transform.GetComponent<Image>().color = new Color32(0xff, 0xff, 0xff, 0x30);
+			}
+
+			EventTrigger.Entry pointerEnterEntry = new EventTrigger.Entry();
+			pointerEnterEntry.eventID = EventTriggerType.PointerEnter;
+			int counter_ins = counter;
+			pointerEnterEntry.callback.AddListener((data) => { UpgradeDescShow(counter_ins); });
+			e_trigger.triggers.Add(pointerEnterEntry);
+
+			EventTrigger.Entry pointerExitEntry = new EventTrigger.Entry();
+			pointerExitEntry.eventID = EventTriggerType.PointerExit;
+			pointerExitEntry.callback.AddListener((data) => { UpgradeDescUnShow(); });
+			e_trigger.triggers.Add(pointerExitEntry);
+
+			counter++;
+		}
+	}
+
+	/// <summary>
+	/// for chacking selected units
+	/// </summary>
+	public void UnitListToggle(){
+		if(isAnimation) return;
+		isUnitListOpen = !isUnitListOpen;
+		isAnimation = true;
+		float target_pos_y = -990f;
+		string unit_list_uitxt = "▲ OPEN UNITS";
+		if(isUnitListOpen){
+			target_pos_y = 0f;
+			unit_list_uitxt = "▼ CLOSE UNITS";
+		}
+		unit_list_trans.Find("UIText").GetComponent<Text>().text = unit_list_uitxt;
+		unit_list_trans.DOLocalMoveY(target_pos_y, 0.5f).OnComplete(()=>{
+			isAnimation = false;
+		});
+	}
+
 	public void SelectCard(int index){
 		if(isAnimation) return;
 
@@ -87,5 +158,6 @@ public class SelectUnits: MonoBehaviour{
 		}
 
 		ChangeCards();
+		UnitListUpdate();
 	}
 }

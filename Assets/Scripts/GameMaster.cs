@@ -42,6 +42,7 @@ public class GameMaster : MonoBehaviour{
 			// SelectUnits.select_unit_dict.Add("弓兵", 10);
 			// SelectUnits.select_unit_dict.Add("指揮官", 1);
 		}
+		current_boss_id = 2;
 
 		BossEncounter();
 		DrawBuffs();
@@ -215,6 +216,8 @@ public class GameMaster : MonoBehaviour{
 			int state = Random.Range(0, 100);
 
 			if(current_boss_id == 0){
+				// StartCoroutine(_EskaBreath());
+				// yield return new WaitForSeconds(4.0f);
 				_DragonCrow(10, 10);
 			}
 			if(current_boss_id == 1){
