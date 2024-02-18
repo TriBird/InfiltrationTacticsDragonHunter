@@ -96,7 +96,7 @@ public class SelectUnits: MonoBehaviour{
 		int counter = 0;
 		foreach(SkillMaster master in SkillModel.skillmasters){
 			EventTrigger e_trigger = upgrade_list_trans.GetChild(counter).GetComponent<EventTrigger>();
-			foreach(SkillMaster tmp in SkillModel.HavingSkills) print(tmp.skill_name);
+			e_trigger.transform.GetComponent<Image>().sprite = master.skill_image;
 			if(SkillModel.HavingSkills.Any(skill => skill.skill_name == master.skill_name)){
 				e_trigger.transform.GetComponent<Image>().color = new Color32(0xff, 0xff, 0xff, 0xff);
 			}else{
