@@ -19,6 +19,7 @@ public class SelectUnits: MonoBehaviour{
 	private int select_remain = 5;
 
 	void Start(){
+		select_unit_lists = new List<UnitMaster>();
 		card_holder_trans.localPosition = new Vector3(0f, -1080f, 0f);
 		card_holder_trans.DOLocalMoveY(0f, 0.5f);
 		SkillModel.isSkill("友情の鎖", ()=>select_remain=6);
