@@ -9,16 +9,16 @@ using UnityEngine.SceneManagement;
 public class SkillEarn: MonoBehaviour{
 
 	public Transform card_holder_trans, remain_text_trans, earn_error_trans;
+	public int select_remain = 2;
 
 	private bool isAnimation = false;
-	private int select_remain = 2;
-
 	private List<SkillMaster> card_list = new List<SkillMaster>();
 
 	void Start(){
 		card_holder_trans.localPosition = new Vector3(0f, -1080f, 0f);
 		card_holder_trans.DOLocalMoveY(0f, 0.5f);
 		earn_error_trans.gameObject.SetActive(false);
+		remain_text_trans.GetComponent<Text>().text = "アップデート可能：" + select_remain;
 		GenerateCards();
 	}
 
@@ -56,8 +56,8 @@ public class SkillEarn: MonoBehaviour{
 			.ToList();
 
 		card_list = diff_list.Take(3).ToList();
-		select_remain = card_list.Count;
-		remain_text_trans.GetComponent<Text>().text = "アップデート可能：" + select_remain;
+		// select_remain = card_list.Count;
+		// remain_text_trans.GetComponent<Text>().text = "アップデート可能：" + select_remain;
 		for(int i=0; i<3; i++){
 			Transform card_ins = card_holder_trans.GetChild(i);
 			if(slot_num <= i){
