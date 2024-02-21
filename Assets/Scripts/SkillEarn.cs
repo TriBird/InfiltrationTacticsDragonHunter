@@ -57,7 +57,7 @@ public class SkillEarn: MonoBehaviour{
 
 		card_list = diff_list.Take(3).ToList();
 		// select_remain = card_list.Count;
-		// remain_text_trans.GetComponent<Text>().text = "アップデート可能：" + select_remain;
+		remain_text_trans.GetComponent<Text>().text = "アップデート可能：" + select_remain;
 		for(int i=0; i<3; i++){
 			Transform card_ins = card_holder_trans.GetChild(i);
 			if(slot_num <= i){

@@ -23,7 +23,9 @@ public class GameMaster : MonoBehaviour{
 	private Coroutine boss_atk_col = null;
 
 	// 開発者モード
-	public bool DebugMode = true;
+	public bool debug_mode = false;
+	// 検証モード
+	public bool verification_mode = true;
 
 	/// <summary>
 	/// 初期化
