@@ -22,20 +22,29 @@ public class ResultMaster: MonoBehaviour{
 		foreach(Transform tmp in result_trans){
 			tmp.gameObject.SetActive(false);
 		}
+		result_trans.gameObject.SetActive(false);
 
-		ResultPipeLine(0, 5555, 5555);
+		// ResultPipeLine(0, 5555, 5555);
 	}
 
 	public void ResultPipeLine(int _boss_id, int _damage, int _max_hp){
+		result_trans.gameObject.SetActive(true);
+
 		boss_id = _boss_id;
 		damage = _damage;
 		max_hp = _max_hp;
 
-		Vector2 pos = result_trans.Find("Next").localPosition;
-		pos.x = result_trans.Find("dragon_" + (boss_id+1)).localPosition.x;
-		result_trans.Find("Next").localPosition = pos;
+		if(boss_id != 2){
+			Vector2 pos = result_trans.Find("Next").localPosition;
+			pos.x = result_trans.Find("dragon_" + (boss_id+1)).localPosition.x;
+			result_trans.Find("Next").localPosition = pos;
+		}else{
+			result_trans.Find("Next").gameObject.SetActive(false);
+		}
 
 		result_trans.Find("damage_info").GetComponent<TextMeshProUGUI>().text = "与えたダメージ 0/0 0%";
+
+		System.IO.File.AppendAllText("Assets/Scripts/log/eska_attack.log", damage.ToString() + "\n");
 
 		StartCoroutine(ResultAnimation());
 	}

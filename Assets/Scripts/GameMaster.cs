@@ -11,7 +11,7 @@ public class GameMaster : MonoBehaviour{
 	public GameObject UnitChara_Prefab, Arrow_Prefab, FireEffect_Prefab;
 	public GameObject Caution_obj, UnitNum_Obj;
 	public Transform Boss_Trans, HPBar_Trans, VSBoss_Trans, BuffBox_Trans, ArrowLayer_Trans, Mask_Trans, EffectLayer_Trans;
-
+	public ResultMaster result_master;
 	public int CurrentUnitNum = 0;
 	public static int current_boss_id = 0;
 
@@ -23,9 +23,7 @@ public class GameMaster : MonoBehaviour{
 	private Coroutine boss_atk_col = null;
 
 	// 開発者モード
-	public bool debug_mode = false;
-	// 検証モード
-	public bool verification_mode = true;
+	public bool debug_mode = true;
 
 	/// <summary>
 	/// 初期化
@@ -45,6 +43,12 @@ public class GameMaster : MonoBehaviour{
 			// SelectUnits.select_unit_dict.Add("指揮官", 1);
 		}
 		current_boss_id = 2;
+
+		string unit_text = "";
+		foreach(UnitMaster unit in SelectUnits.select_unit_lists){
+			unit_text += unit.unit_name + "," + unit.num + "/";
+		}
+		System.IO.File.AppendAllText("Assets/Scripts/log/eska_attack.log", unit_text);
 
 		BossEncounter();
 		DrawBuffs();
@@ -214,6 +218,12 @@ public class GameMaster : MonoBehaviour{
 		}
 
 		while(true){
+			// check units is living
+			if(SelectUnits.select_unit_lists.Count == 0 && VSBoss_Trans.childCount == 0){
+				result_master.ResultPipeLine(current_boss_id, (MaxBossHP - BossHP), MaxBossHP);
+				break;
+			}
+
 			// roll 0-99
 			int state = Random.Range(0, 100);
 
@@ -267,7 +277,8 @@ public class GameMaster : MonoBehaviour{
 
 			Mask_Trans.GetComponent<CanvasGroup>().DOFade(1, 1.0f).OnComplete(()=>{
 				current_boss_id += 1;
-				SceneManager.LoadScene("UpGrade");
+				result_master.ResultPipeLine(current_boss_id, MaxBossHP - BossHP, MaxBossHP);
+				// SceneManager.LoadScene("UpGrade");
 			}).SetLink(gameObject);
 		}
 

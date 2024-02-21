@@ -29,7 +29,7 @@ public class SkillEarn: MonoBehaviour{
 				selected_skills.Add(card_list[tmp.GetComponent<CardCtrl>().card_index]);
 			}
 		} 
-		if(selected_skills.Count < select_remain){
+		if(selected_skills.Count > select_remain){
 			earn_error_trans.gameObject.SetActive(true);
 			DOVirtual.DelayedCall(1.5f, ()=>{
 				earn_error_trans.gameObject.SetActive(false);

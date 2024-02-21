@@ -1501,8 +1501,9 @@ MonoBehaviour:
   ArrowLayer_Trans: {fileID: 282063479}
   Mask_Trans: {fileID: 865372092}
   EffectLayer_Trans: {fileID: 1914611369}
+  result_master: {fileID: 1003130595}
   CurrentUnitNum: 0
-  DebugMode: 1
+  debug_mode: 1
 --- !u!114 &1003130595
 MonoBehaviour:
   m_ObjectHideFlags: 0
