@@ -42,7 +42,7 @@ public class GameMaster : MonoBehaviour{
 			// SelectUnits.select_unit_dict.Add("弓兵", 10);
 			// SelectUnits.select_unit_dict.Add("指揮官", 1);
 		}
-		current_boss_id = 2;
+		current_boss_id = 0;
 
 		string unit_text = "";
 		foreach(UnitMaster unit in SelectUnits.select_unit_lists){
@@ -145,7 +145,7 @@ public class GameMaster : MonoBehaviour{
 	/// </summary>
 	public void Boss_Init(){
 		string[] boss_names = new string[]{"翼竜ワイバーン", "古代竜アルビオン", "神龍エスカドレイク"};
-		int[] boss_hp = new int[]{1000, 1000, 10000};
+		int[] boss_hp = new int[]{4500, 30000, 60000};
 
 		MaxBossHP = boss_hp[current_boss_id];
 		BossHP = MaxBossHP;

@@ -83,6 +83,8 @@ public class ResultMaster: MonoBehaviour{
 
 		result_trans.Find("return_units").gameObject.SetActive(true);
 
+		ReturnUnitSelect();
+
 		yield break;
 	}
 
@@ -94,10 +96,10 @@ public class ResultMaster: MonoBehaviour{
 		GameObject.Find("Scripts").GetComponent<SkillEarn>().select_remain = remain_num;
 		SceneManager.sceneLoaded -= UpgradeSetter;
 	}
-	
 	public void ReturnUnitSelect(){
-		SceneManager.sceneLoaded += UpgradeSetter;
-		SceneManager.LoadScene("UpGrade");
+		// SceneManager.sceneLoaded += UpgradeSetter;
+		// SceneManager.LoadScene("UpGrade");
+		SceneManager.LoadScene("SelectUnits");
 	}
 
 }

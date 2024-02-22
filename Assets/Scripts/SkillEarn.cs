@@ -9,7 +9,7 @@ using UnityEngine.SceneManagement;
 public class SkillEarn: MonoBehaviour{
 
 	public Transform card_holder_trans, remain_text_trans, earn_error_trans;
-	public int select_remain = 2;
+	public int select_remain = 3;
 
 	private bool isAnimation = false;
 	private List<SkillMaster> card_list = new List<SkillMaster>();

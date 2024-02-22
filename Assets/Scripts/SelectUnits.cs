@@ -68,7 +68,10 @@ public class SelectUnits: MonoBehaviour{
 		foreach(Transform child in card_holder_trans){
 			seq.Join(child.DOLocalRotate(new Vector3(0, 360f, 0), 0.5f, RotateMode.FastBeyond360));
 		}
-		seq.OnComplete(() => isAnimation = false);
+		seq.OnComplete(() => {
+			isAnimation = false;
+			SelectCard(0);
+		});
 		seq.SetLink(gameObject);
 	}
 
