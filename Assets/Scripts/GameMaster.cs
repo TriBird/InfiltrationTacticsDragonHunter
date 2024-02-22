@@ -141,7 +141,7 @@ public class GameMaster : MonoBehaviour{
 	/// </summary>
 	public void Boss_Init(){
 		string[] boss_names = new string[]{"翼竜ワイバーン", "古代竜アルビオン", "神龍エスカドレイク"};
-		int[] boss_hp = new int[]{1000, 1000, 10000};
+		int[] boss_hp = new int[]{4500, 30000, 60000};
 
 		MaxBossHP = boss_hp[current_boss_id];
 		BossHP = MaxBossHP;
