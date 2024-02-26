@@ -1,4 +1,7 @@
 # 人海戦術ドラゴンハンター（リメイク版）
+
+![Static Badge](https://img.shields.io/badge/unity-2022.3.14f1-white?logo=unity)
+
 現在開発中  
 以下はリメイク前のゲームの説明文です。
 
